@@ -8,6 +8,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.poweroutages.model.Model;
+import it.polito.tdp.poweroutages.model.Nerc;
+import it.polito.tdp.poweroutages.model.Vicini;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -32,7 +34,7 @@ public class PowerOutagesController {
     private Button btnCreaGrafo; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbBoxNerc"
-    private ComboBox<?> cmbBoxNerc; // Value injected by FXMLLoader
+    private ComboBox<Nerc> cmbBoxNerc; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnVisualizzaVicini"
     private Button btnVisualizzaVicini; // Value injected by FXMLLoader
@@ -45,7 +47,10 @@ public class PowerOutagesController {
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
-
+    	this.model.creaGrafo();
+    	txtResult.clear();
+    	txtResult.appendText("Grafo creato!\nHa " + this.model.getnVertici()+ " vertici e " + this.model.getnArchi()+ " archi!\n");
+    	cmbBoxNerc.getItems().addAll(this.model.getvertici());
     }
 
     @FXML
@@ -55,6 +60,15 @@ public class PowerOutagesController {
 
     @FXML
     void doVisualizzaVicini(ActionEvent event) {
+    	if(cmbBoxNerc.getValue()==null)
+    		txtResult.appendText("Selezionare un Nerc!\n");
+    	else {
+    		Nerc n = cmbBoxNerc.getValue();
+    		this.model.calcolavicini(n);
+    		txtResult.appendText("I vicini di " + n.getValue() + "sono:\n");
+    		for(Vicini v: this.model.returnpesi())
+    			txtResult.appendText(v.toString());
+    	}
 
     }
 
